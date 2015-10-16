@@ -1,4 +1,6 @@
 require 'toot/version'
+
+require 'toot/source'
 require 'toot/config'
 
 module Toot
