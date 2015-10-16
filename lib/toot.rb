@@ -1,5 +1,15 @@
-require "toot/version"
+require 'toot/version'
+require 'toot/config'
 
 module Toot
-  # Your code goes here...
+
+  def self.config
+    if block_given?
+      yield config
+    else
+      @config ||= Config.new
+    end
+  end
+
 end
+
