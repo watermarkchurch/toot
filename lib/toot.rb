@@ -9,6 +9,9 @@ require 'toot/source'
 
 module Toot
 
+  class Error < StandardError; end
+  class CallbackFailure < Error; end
+
   def self.config
     if block_given?
       yield config
