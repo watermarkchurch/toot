@@ -6,10 +6,12 @@ require 'toot/config'
 require 'toot/publishes_event'
 require 'toot/calls_event_callback'
 require 'toot/source'
+require 'toot/subscription'
 
 module Toot
 
   class Error < StandardError; end
+  class ConfigError < Error; end
   class CallbackFailure < Error; end
 
   def self.config

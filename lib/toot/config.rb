@@ -16,8 +16,28 @@ module Toot
       end
     end
 
+    def subscribe(source_name, channel_suffix, handler)
+      source = find_source_by_name(source_name) or
+        fail(ConfigError, "You cannot subscribe to an undefined source: #{source_name}")
+      Subscription.new(
+        source: source,
+        channel: [source.channel_prefix, channel_suffix].join,
+        handler: handler
+      ).tap do |subscription|
+        subscriptions << subscription
+      end
+    end
+
     def sources
       @sources ||= []
+    end
+
+    def subscriptions
+      @subscriptions ||= []
+    end
+
+    def find_source_by_name(name)
+      sources.find { |source| source.name == name }
     end
 
     def redis_connection

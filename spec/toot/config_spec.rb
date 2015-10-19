@@ -33,6 +33,36 @@ RSpec.describe Toot::Config do
     end
   end
 
+  describe "#subscribe" do
+    let!(:source) { config.source :source, subscription_url: "", channel_prefix: "prefix." }
+
+    it "requires a source_name, a channel_suffix, and a handler" do
+      expect { config.subscribe }.to raise_error(ArgumentError)
+      expect { config.subscribe :source }.to raise_error(ArgumentError)
+      expect { config.subscribe :source, 'updated' }.to raise_error(ArgumentError)
+      config.subscribe :source, 'updated', -> (payload) { :handler }
+    end
+
+    it "returns the new Subscription" do
+      obj = config.subscribe :source, 'suffix', -> (*) { :handler }
+      expect(obj).to be_a(Toot::Subscription)
+      expect(obj.source).to eq(source)
+      expect(obj.channel).to eq("prefix.suffix")
+      expect(obj.handler.()).to eq(:handler)
+    end
+
+    it "adds new Subscription to @subscriptions" do
+      obj1 = config.subscribe :source, 'test', :handler
+      obj2 = config.subscribe :source, 'test', :handler
+      expect(config.subscriptions).to eq([obj1, obj2])
+    end
+
+    it "raises a ConfigError if the source doesn't exist" do
+      expect { config.subscribe :no_source, 'foo', :handler }
+        .to raise_error(Toot::ConfigError).with_message("You cannot subscribe to an undefined source: no_source")
+    end
+  end
+
   describe "#redis_connection" do
     it "allows basic getting and setting" do
       config.redis_connection = -> { :redis }
