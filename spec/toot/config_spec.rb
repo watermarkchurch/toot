@@ -33,4 +33,15 @@ RSpec.describe Toot::Config do
     end
   end
 
+  describe "#redis_connection" do
+    it "allows basic getting and setting" do
+      config.redis_connection = -> { :redis }
+      expect(config.redis_connection.()).to eq(:redis)
+    end
+
+    it "defaults to Sidekiq.redis method" do
+      expect(config.redis_connection).to eq(Sidekiq.method(:redis))
+    end
+  end
+
 end

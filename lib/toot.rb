@@ -16,8 +16,16 @@ module Toot
     end
   end
 
+  def self.reset_config
+    @config = Config.new
+  end
+
   def self.publish(channel_name, payload, prefix: config.channel_prefix)
     PublishesEvent.perform_async([prefix, channel_name].join, payload)
+  end
+
+  def self.redis(connection=config.redis_connection, &block)
+    connection.call(&block)
   end
 
 end

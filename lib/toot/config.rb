@@ -1,6 +1,7 @@
 module Toot
   CONFIG_ATTRS = %i[
     channel_prefix
+    redis_connection
   ]
 
   class Config < Struct.new(*CONFIG_ATTRS)
@@ -17,6 +18,10 @@ module Toot
 
     def sources
       @sources ||= []
+    end
+
+    def redis_connection
+      self[:redis_connection] ||= Sidekiq.method(:redis)
     end
 
   end
