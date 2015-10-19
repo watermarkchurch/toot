@@ -1,7 +1,10 @@
 require 'toot/version'
 
-require 'toot/source'
+require 'sidekiq'
+
 require 'toot/config'
+require 'toot/publishes_event'
+require 'toot/source'
 
 module Toot
 
@@ -11,6 +14,10 @@ module Toot
     else
       @config ||= Config.new
     end
+  end
+
+  def self.publish(channel_name, payload, prefix: config.channel_prefix)
+    PublishesEvent.perform_async([prefix, channel_name].join, payload)
   end
 
 end

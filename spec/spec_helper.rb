@@ -1,5 +1,8 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'toot'
+require 'sidekiq/testing'
+
+Sidekiq::Testing.inline!
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
