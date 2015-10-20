@@ -5,6 +5,7 @@ require 'sidekiq'
 require 'toot/config'
 require 'toot/publishes_event'
 require 'toot/calls_event_callback'
+require 'toot/handler_service'
 require 'toot/source'
 require 'toot/subscription'
 
