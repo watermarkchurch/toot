@@ -25,9 +25,9 @@ module Toot
       }.to_json
       request.content_type = "application/json"
 
-      response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      response = Net::HTTP.start(uri.hostname, uri.port) { |http|
         http.request request
-      end
+      }
 
       case response
       when Net::HTTPSuccess
