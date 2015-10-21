@@ -4,11 +4,11 @@ module Toot
     def call(env)
       request = Rack::Request.new(env)
       response = Rack::Response.new
-      json = parse_body_json(request)
+      json = parse_body_json(request).merge(request.params)
 
-      if request["channel_name"] && json["callback_url"]
+      if json["channel_name"] && json["callback_url"]
         Toot.redis do |r|
-          r.sadd request["channel_name"], json["callback_url"]
+          r.sadd json["channel_name"], json["callback_url"]
         end
       else
         response.status = 422
