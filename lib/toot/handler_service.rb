@@ -6,13 +6,13 @@ module Toot
     def call(env)
       request = Rack::Request.new(env)
       response = Rack::Response.new
-      payload = JSON.parse(request.body.read)
+      event_data = JSON.parse(request.body.read)
 
       subscriptions = Toot.config.subscriptions.select { |s|
         s.channel == request["channel_name"] }
 
       subscriptions.each do |subscription|
-        subscription.handler.perform_async(payload)
+        subscription.handler.perform_async(event_data)
       end
 
       response["X-Toot-Unsubscribe"] = "True" if subscriptions.size == 0

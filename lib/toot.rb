@@ -3,6 +3,7 @@ require 'toot/version'
 require 'sidekiq'
 
 require 'toot/config'
+require 'toot/event'
 require 'toot/source'
 require 'toot/subscription'
 
@@ -32,7 +33,10 @@ module Toot
   end
 
   def self.publish(channel_name, payload, prefix: config.channel_prefix)
-    PublishesEvent.perform_async([prefix, channel_name].join, payload)
+    Event.new(
+      channel: [prefix, channel_name].join,
+      payload: payload
+    ).publish
   end
 
   def self.redis(connection=config.redis_connection, &block)

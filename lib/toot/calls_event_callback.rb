@@ -4,10 +4,10 @@ module Toot
   class CallsEventCallback
     include Sidekiq::Worker
 
-    def perform(callback_url, payload)
+    def perform(callback_url, event_data)
       uri = URI(callback_url)
       request = Net::HTTP::Post.new(uri)
-      request.body = payload.to_json
+      request.body = event_data.to_json
       request.content_type = "application/json"
 
       response = Net::HTTP.start(uri.hostname, uri.port) do |http|

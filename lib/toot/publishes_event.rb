@@ -2,9 +2,10 @@ module Toot
   class PublishesEvent
     include Sidekiq::Worker
 
-    def perform(channel_name, payload)
-      channel_callback_urls(channel_name)
-        .map { |callback| CallsEventCallback.perform_async(callback, payload) }
+    def perform(event_data)
+      event = Event.new(event_data)
+      channel_callback_urls(event.channel)
+        .map { |callback| CallsEventCallback.perform_async(callback, event_data) }
     end
 
     private

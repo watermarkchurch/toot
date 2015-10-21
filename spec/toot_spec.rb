@@ -30,26 +30,33 @@ RSpec.describe Toot do
   end
 
   describe "#publish" do
-    it "accepts a channel_name and a payload" do
-      Toot.publish("channel", { payload: true })
+    it "returns an event" do
+      event = Toot.publish("channel", { payload: true })
+      expect(event).to be_a(Toot::Event)
     end
 
-    it "calls PublishesEvent.perform_async with args" do
-      expect(Toot::PublishesEvent).to receive(:perform_async).with("channel", {})
-      Toot.publish("channel", {})
+    it "calls Event.new with args" do
+      event = Toot.publish("channel", {})
+      expect(event.channel).to eq("channel")
+      expect(event.payload).to eq({})
     end
 
     it "adds prefix option to channel name if present" do
-      expect(Toot::PublishesEvent).to receive(:perform_async).with("prefix.channel", {})
-      Toot.publish("channel", {}, prefix: "prefix.")
+      event = Toot.publish("channel", {}, prefix: "prefix.")
+      expect(event.channel).to eq("prefix.channel")
     end
 
     it "uses config's channel_prefix if present and no prefix passed" do
-      previous_value = Toot.config.channel_prefix
-      expect(Toot::PublishesEvent).to receive(:perform_async).with("prefix.channel", {})
       Toot.config.channel_prefix = "prefix."
+      event = Toot.publish("channel", {})
+      expect(event.channel).to eq("prefix.channel")
+    end
+
+    it "calls publish on the event" do
+      event_spy = instance_spy(Toot::Event)
+      expect(Toot::Event).to receive(:new).and_return(event_spy)
       Toot.publish("channel", {})
-      Toot.config.channel_prefix = previous_value
+      expect(event_spy).to have_received(:publish)
     end
   end
 
