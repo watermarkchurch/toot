@@ -2,6 +2,7 @@ module Toot
   CONFIG_ATTRS = %i[
     channel_prefix
     redis_connection
+    callback_url
   ]
 
   class Config < Struct.new(*CONFIG_ATTRS)
