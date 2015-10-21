@@ -16,6 +16,11 @@ module Toot
 
       case response
       when Net::HTTPSuccess
+        if response["X-Toot-Unsubscribe"]
+          Toot.redis do |r|
+            r.srem event_data["channel"], callback_url
+          end
+        end
       else
         raise CallbackFailure, "Response code: #{response.code}"
       end

@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 RSpec.describe Toot::CallsEventCallback do
+  let(:connection) { instance_double(Redis) }
+
+  before do
+    allow(Toot).to receive(:redis) do |&blk|
+      blk.call(connection)
+    end
+  end
 
   before(:each) do
     WebMock.enable!
@@ -20,6 +27,11 @@ RSpec.describe Toot::CallsEventCallback do
       .to raise_error(Toot::CallbackFailure).with_message(/301/)
   end
 
-  it "Removes this callback from the channel's set if response header contains X-Toot-Unsubscribe"
+  it "Removes this callback from the channel's set if response header contains X-Toot-Unsubscribe" do
+    stub_request(:post, "http://example.com/")
+      .and_return(status: 200, headers: { "X-Toot-Unsubscribe" => "True" })
+    expect(connection).to receive(:srem).with("ch1", "http://example.com/")
+    described_class.new.perform("http://example.com/", "channel" => "ch1")
+  end
 end
 
