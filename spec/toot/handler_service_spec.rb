@@ -4,7 +4,7 @@ RSpec.describe Toot::HandlerService do
   let(:env) {
     {
       "REQUEST_METHOD" => "POST",
-      "rack.input" => StringIO.new('{"channel_name":"test.channel","payload":123}'),
+      "rack.input" => StringIO.new('{"channel":"test.channel","payload":123}'),
     }
   }
 
@@ -17,7 +17,7 @@ RSpec.describe Toot::HandlerService do
 
     it "enqueues the handler with the provided event_data" do
       response = Rack::MockResponse.new(*described_class.call(env))
-      expect(handler).to have_received(:perform_async).with({ "channel_name" => "test.channel", "payload" => 123 })
+      expect(handler).to have_received(:perform_async).with({ "channel" => "test.channel", "payload" => 123 })
       expect(response.status).to eq(200)
     end
 

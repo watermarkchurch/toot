@@ -5,7 +5,7 @@ RSpec.describe Toot::SubscriptionsService do
   let(:env) {
     {
       "REQUEST_METHOD" => "POST",
-      "rack.input" => StringIO.new('{"callback_url":"http://example.com/callback","channel_name":"test.channel"}'),
+      "rack.input" => StringIO.new('{"callback_url":"http://example.com/callback","channel":"test.channel"}'),
     }
   }
 
@@ -21,7 +21,7 @@ RSpec.describe Toot::SubscriptionsService do
     expect(response.status).to eq(200)
   end
 
-  it "does nothing and return 422 if channel_name isn't set" do
+  it "does nothing and return 422 if channel isn't set" do
     env["rack.input"] = StringIO.new('{"callback_url":"http://example.com/callback"}')
     response = Rack::MockResponse.new(*described_class.call(env))
     expect(connection).to_not have_received(:sadd)
@@ -29,18 +29,9 @@ RSpec.describe Toot::SubscriptionsService do
   end
 
   it "does nothing and returns 422 if callback_url isn't set" do
-    env["rack.input"] = StringIO.new('{"channel_name":"test.channel"}')
+    env["rack.input"] = StringIO.new('{"channel":"test.channel"}')
     response = Rack::MockResponse.new(*described_class.call(env))
     expect(connection).to_not have_received(:sadd)
     expect(response.status).to eq(422)
   end
-
-  it "allows setting options through the query string" do
-    env["rack.input"] = StringIO.new('')
-    env["QUERY_STRING"] = "channel_name=test.channel&callback_url=http://example.com/callback"
-    response = Rack::MockResponse.new(*described_class.call(env))
-    expect(connection).to have_received(:sadd).with("test.channel", "http://example.com/callback")
-    expect(response.status).to eq(200)
-  end
-
 end

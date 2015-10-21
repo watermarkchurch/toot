@@ -10,9 +10,9 @@ module Toot
 
     private
 
-    def channel_callback_urls(channel_name)
+    def channel_callback_urls(channel)
       Toot.redis do |r|
-        r.smembers channel_name
+        r.smembers channel
       end
     end
   end

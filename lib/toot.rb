@@ -32,9 +32,9 @@ module Toot
     @config = Config.new
   end
 
-  def self.publish(channel_name, payload, prefix: config.channel_prefix)
+  def self.publish(channel, payload, prefix: config.channel_prefix)
     Event.new(
-      channel: [prefix, channel_name].join,
+      channel: [prefix, channel].join,
       payload: payload
     ).publish
   end

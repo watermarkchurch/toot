@@ -20,13 +20,13 @@ RSpec.describe Toot::RegistersSubscriptions do
     expect(WebMock).to have_requested(:post, "http://src1.com/cb")
       .with { |req|
         json = JSON.parse(req.body)
-        expect(json["channel_name"]).to eq('ch1')
+        expect(json["channel"]).to eq('ch1')
         expect(json["callback_url"]).to eq('http://me.com/cb')
       }
     expect(WebMock).to have_requested(:post, "http://src2.com/cb")
       .with { |req|
         json = JSON.parse(req.body)
-        expect(json["channel_name"]).to eq('ch2')
+        expect(json["channel"]).to eq('ch2')
         expect(json["callback_url"]).to eq('http://me.com/cb')
       }
   end
