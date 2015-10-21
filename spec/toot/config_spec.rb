@@ -40,15 +40,15 @@ RSpec.describe Toot::Config do
       expect { config.subscribe }.to raise_error(ArgumentError)
       expect { config.subscribe :source }.to raise_error(ArgumentError)
       expect { config.subscribe :source, 'updated' }.to raise_error(ArgumentError)
-      config.subscribe :source, 'updated', -> (payload) { :handler }
+      config.subscribe :source, 'updated', :handler
     end
 
     it "returns the new Subscription" do
-      obj = config.subscribe :source, 'suffix', -> (*) { :handler }
+      obj = config.subscribe :source, 'suffix', :handler
       expect(obj).to be_a(Toot::Subscription)
       expect(obj.source).to eq(source)
       expect(obj.channel).to eq("prefix.suffix")
-      expect(obj.handler.()).to eq(:handler)
+      expect(obj.handler).to eq(:handler)
     end
 
     it "adds new Subscription to @subscriptions" do
