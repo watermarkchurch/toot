@@ -1,4 +1,4 @@
-# Toot
+# Toot 📯💨
 
 Toot is a library for basic PubSub over HTTP. Toot fires off event
 payloads, and provides simple Rack apps for handling event callbacks and
@@ -20,9 +20,10 @@ records in sync with the Contacts app.
 # In the Orders app configuration
 Toot.config do |c|
   c.channel_prefix = "com.example.myapp"
-  c.sources = {
-    contacts: { subscribe_url: "https://example.com/sub", channel_prefix: "com.example.contacts" }
-  }
+  c.callback_url = -> (channel) { "http://myapp.example.com/callback/#{channel}" }
+
+  c.source :contacts, subscribe_url: "https://example.com/sub", channel_prefix: "com.example.contacts"
+
   c.subscribe :contacts, 'person.updated.v1', EventHandlers::ContactPersonUpdated
   c.subscribe :contacts, 'person.created.v1', EventHandlers::ContactPersonCreated
 end
