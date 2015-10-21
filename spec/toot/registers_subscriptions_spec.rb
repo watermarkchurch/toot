@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Toot::RegistersSubscriptions do
   before do
-    Toot.config.callback_url = -> (ch) { "http://me.com/cb/#{ch}" }
+    Toot.config.callback_url = "http://me.com/cb"
     Toot.config.source :src1, subscription_url: "http://src1.com/cb", channel_prefix: ""
     Toot.config.source :src2, subscription_url: "http://src2.com/cb", channel_prefix: ""
     Toot.config.source :src3, subscription_url: "http://src3.com/cb", channel_prefix: ""
@@ -21,13 +21,13 @@ RSpec.describe Toot::RegistersSubscriptions do
       .with { |req|
         json = JSON.parse(req.body)
         expect(json["channel_name"]).to eq('ch1')
-        expect(json["callback_url"]).to eq('http://me.com/cb/ch1')
+        expect(json["callback_url"]).to eq('http://me.com/cb')
       }
     expect(WebMock).to have_requested(:post, "http://src2.com/cb")
       .with { |req|
         json = JSON.parse(req.body)
         expect(json["channel_name"]).to eq('ch2')
-        expect(json["callback_url"]).to eq('http://me.com/cb/ch2')
+        expect(json["callback_url"]).to eq('http://me.com/cb')
       }
   end
 

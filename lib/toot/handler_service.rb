@@ -9,7 +9,7 @@ module Toot
       event_data = JSON.parse(request.body.read)
 
       subscriptions = Toot.config.subscriptions.select { |s|
-        s.channel == request["channel_name"] }
+        s.channel == event_data["channel_name"] }
 
       subscriptions.each do |subscription|
         subscription.handler.perform_async(event_data)

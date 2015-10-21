@@ -20,7 +20,7 @@ module Toot
       uri = URI(subscription.source.subscription_url)
       request = Net::HTTP::Post.new(uri)
       request.body = {
-        callback_url: Toot.config.callback_url.(subscription.channel),
+        callback_url: Toot.config.callback_url,
         channel_name: subscription.channel,
       }.to_json
       request.content_type = "application/json"

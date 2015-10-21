@@ -76,8 +76,8 @@ RSpec.describe Toot::Config do
 
   describe "#callback_url" do
     it "allows basic getting and setting" do
-      config.callback_url = -> (ch) { "http://example.com/callback/#{ch}" }
-      expect(config.callback_url.('ch1')).to eq("http://example.com/callback/ch1")
+      config.callback_url = "http://example.com/callback"
+      expect(config.callback_url).to eq("http://example.com/callback")
     end
   end
 

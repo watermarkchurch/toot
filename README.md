@@ -20,7 +20,7 @@ records in sync with the Contacts app.
 # In the Orders app configuration
 Toot.config do |c|
   c.channel_prefix = "com.example.myapp"
-  c.callback_url = -> (channel) { "http://myapp.example.com/callback/#{channel}" }
+  c.callback_url = "http://myapp.example.com/callbacks"
 
   c.source :contacts, subscribe_url: "https://example.com/sub", channel_prefix: "com.example.contacts"
 
