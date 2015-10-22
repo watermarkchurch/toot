@@ -40,6 +40,10 @@ module Toot
     ).publish
   end
 
+  def self.subscribe(*args)
+    config.subscribe(*args)
+  end
+
   def self.redis(connection=config.redis_connection, &block)
     connection.call(&block)
   end

@@ -60,6 +60,13 @@ RSpec.describe Toot do
     end
   end
 
+  describe "#subscribe" do
+    it "delegates to config.subscribe" do
+      expect(Toot.config).to receive(:subscribe).with(:source_name, :channel_suffix, :handler)
+      Toot.subscribe(:source_name, :channel_suffix, :handler)
+    end
+  end
+
   describe "#redis" do
     it "calls the passed connection with the passed block" do
       called = false
