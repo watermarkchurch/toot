@@ -41,6 +41,10 @@ module Toot
       sources.find { |source| source.name == name }
     end
 
+    def subscriptions_for_channel(channel)
+      subscriptions.select { |s| s.channel == channel }
+    end
+
     def redis_connection
       self[:redis_connection] ||= Sidekiq.method(:redis)
     end

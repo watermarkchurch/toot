@@ -8,6 +8,7 @@ require 'toot/source'
 require 'toot/subscription'
 
 require 'toot/calls_event_callback'
+require 'toot/calls_handlers'
 require 'toot/handler_service'
 require 'toot/publishes_event'
 require 'toot/registers_subscriptions'

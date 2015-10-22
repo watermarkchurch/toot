@@ -84,4 +84,12 @@ RSpec.describe Toot::Event do
 
   end
 
+  describe "==" do
+    it "returns true if ids are the same and false otherwise" do
+      obj1 = described_class.new
+      obj2 = described_class.new(id: obj1.id)
+      expect(obj1).to eq(obj2)
+      expect(obj1).to_not eq(described_class.new)
+    end
+  end
 end

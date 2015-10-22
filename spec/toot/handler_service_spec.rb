@@ -15,18 +15,10 @@ RSpec.describe Toot::HandlerService do
       Toot.config.subscribe :test, 'channel', handler
     end
 
-    it "enqueues the handler with the provided event_data" do
+    it "enqueues the CallsHandlers job for the given event_data" do
+      expect(Toot::CallsHandlers).to receive(:perform_async).with({ "channel" => "test.channel", "payload" => 123 })
       response = Rack::MockResponse.new(*described_class.call(env))
-      expect(handler).to have_received(:perform_async).with({ "channel" => "test.channel", "payload" => 123 })
       expect(response.status).to eq(200)
-    end
-
-    it "enqueues multiple handlers when multiple have been defined" do
-      other_handler = spy(:other_handler)
-      Toot.config.subscribe :test, 'channel', other_handler
-      described_class.call(env)
-      expect(handler).to have_received(:perform_async)
-      expect(other_handler).to have_received(:perform_async)
     end
 
     it "does not include the X-Toot-Unsubscribe header" do
@@ -36,12 +28,10 @@ RSpec.describe Toot::HandlerService do
   end
 
   context "with an event channel with no subscription" do
-    it "does not call another channel" do
-      handler = spy(:handler)
-      Toot.config.source :test, subscription_url: "", channel_prefix: "test."
-      Toot.config.subscribe :test, 'channel2', handler
-      described_class.call(env)
-      expect(handler).to_not have_received(:perform_async)
+    it "does not call the CallsHandlers job" do
+      expect(Toot::CallsHandlers).to_not receive(:perform_async)
+      response = Rack::MockResponse.new(*described_class.call(env))
+      expect(response.status).to eq(200)
     end
 
     it "includes the X-Toot-Unsubscribe header" do
