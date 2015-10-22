@@ -1,4 +1,4 @@
-# Toot 📯💨
+# Toot :postal_horn: :dash:
 
 Toot is a library for basic PubSub over HTTP. Toot fires off event
 payloads, and provides simple Rack apps for handling event callbacks and
