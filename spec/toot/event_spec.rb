@@ -92,4 +92,11 @@ RSpec.describe Toot::Event do
       expect(obj1).to_not eq(described_class.new)
     end
   end
+
+  describe "[]" do
+    it "delegate to payload" do
+      event = described_class.new(payload: { test: 123 })
+      expect(event[:test]).to eq(123)
+    end
+  end
 end

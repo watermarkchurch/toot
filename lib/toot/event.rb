@@ -38,5 +38,9 @@ module Toot
     def ==(other)
       self.id == other.id
     end
+
+    def [](key)
+      payload[key]
+    end
   end
 end
