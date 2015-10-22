@@ -50,3 +50,4 @@ module Toot
 
 end
 
+require 'toot/rails' if defined?(Rails)
