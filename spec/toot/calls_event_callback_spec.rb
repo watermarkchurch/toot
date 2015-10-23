@@ -33,5 +33,18 @@ RSpec.describe Toot::CallsEventCallback do
     expect(connection).to receive(:srem).with("ch1", "http://example.com/")
     described_class.new.perform("http://example.com/", "channel" => "ch1")
   end
+
+  it "passes the request through the configured `Toot.config.request_filter`" do
+    stub_request(:post, "http://example.com/").and_return(status: 200)
+    Toot.config.request_filter = -> (request) {
+      request["X-Test-Header"] = "Here I Am"
+      request
+    }
+
+    described_class.new.perform("http://example.com/", {})
+
+    expect(WebMock).to have_requested(:post, "http://example.com/")
+      .with(headers: { "X-Test-Header" => "Here I Am" })
+  end
 end
 

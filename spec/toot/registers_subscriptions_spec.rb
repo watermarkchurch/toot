@@ -49,4 +49,17 @@ RSpec.describe Toot::RegistersSubscriptions do
       .with_message(/400/)
   end
 
+  it "passes the request through the configured `Toot.config.request_filter`" do
+    stub_request(:post, "http://src1.com/cb").and_return(status: 200)
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
+    Toot.config.request_filter = -> (request) {
+      request["X-Test-Header"] = "Here I Am"
+      request
+    }
+
+    described_class.call
+
+    expect(WebMock).to have_requested(:post, "http://src1.com/cb")
+      .with(headers: { "X-Test-Header" => "Here I Am" })
+  end
 end

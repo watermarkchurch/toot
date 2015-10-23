@@ -11,7 +11,7 @@ module Toot
       request.content_type = "application/json"
 
       response = Net::HTTP.start(uri.hostname, uri.port) do |http|
-        http.request request
+        http.request Toot.config.request_filter.(request)
       end
 
       case response
