@@ -3,6 +3,7 @@ module Toot
     channel_prefix
     redis_connection
     callback_url
+    request_filter
   ]
 
   class Config < Struct.new(*CONFIG_ATTRS)
@@ -47,6 +48,10 @@ module Toot
 
     def redis_connection
       self[:redis_connection] ||= Sidekiq.method(:redis)
+    end
+
+    def request_filter
+      self[:request_filter] ||= -> (request) { request }
     end
 
   end

@@ -116,6 +116,10 @@ in greater detail.
 * `redis_connection`: If you'd like to use a custom Redis connection you
   can configure a callable here that yields a redis connection. By
   default the Sidekiq Redis connection pool is used.
+* `request_filter`: All external HTTP calls will pass the
+  `Net::HTTP::Request` object to this proc before executing it. You can
+  use this hook to add authentication data to your requests. The default
+  implementation simply returns the request unmodified.
 * `source`: This is a method call that defines a named source. It should
   include a `subscription_url` option and a `channel_prefix` option.
   * The first argument is the name of this source
