@@ -113,6 +113,9 @@ in greater detail.
 * `callback_url`: The event handler URL that this application will
   register to remote publishers. It should match the full URL to
   wherever you have mounted the `Toot::HandlerService` for this app.
+* `http_connection`: An instance of Faraday::Connection which is used
+  for any external HTTP calls. You can use this to add custom middleware
+  for authorization, logging, or debugging.
 * `redis_connection`: If you'd like to use a custom Redis connection you
   can configure a callable here that yields a redis connection. By
   default the Sidekiq Redis connection pool is used.
