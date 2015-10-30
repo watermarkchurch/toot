@@ -74,6 +74,22 @@ RSpec.describe Toot::Config do
     end
   end
 
+  describe "#http_connection" do
+    it "allows basic getting and setting" do
+      config.http_connection = :http
+      expect(config.http_connection).to eq(:http)
+    end
+
+    it "defaults to a new Faraday::Connection" do
+      expect(config.http_connection).to be_a(Faraday::Connection)
+    end
+
+    it "caches the connection" do
+      expect(config.http_connection.object_id)
+        .to eq(config.http_connection.object_id)
+    end
+  end
+
   describe "#callback_url" do
     it "allows basic getting and setting" do
       config.callback_url = "http://example.com/callback"

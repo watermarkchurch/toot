@@ -1,5 +1,6 @@
 require 'toot/version'
 
+require 'faraday'
 require 'sidekiq'
 
 require 'toot/config'

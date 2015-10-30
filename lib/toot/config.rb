@@ -1,6 +1,7 @@
 module Toot
   CONFIG_ATTRS = %i[
     channel_prefix
+    http_connection
     redis_connection
     callback_url
     request_filter
@@ -44,6 +45,10 @@ module Toot
 
     def subscriptions_for_channel(channel)
       subscriptions.select { |s| s.channel == channel }
+    end
+
+    def http_connection
+      self[:http_connection] ||= Faraday::Connection.new
     end
 
     def redis_connection
