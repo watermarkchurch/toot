@@ -18,21 +18,17 @@ module Toot
 
     private def register(subscription)
       uri = URI(subscription.source.subscription_url)
-      request = Net::HTTP::Post.new(uri)
-      request.body = {
-        callback_url: Toot.config.callback_url,
-        channel: subscription.channel,
-      }.to_json
-      request.content_type = "application/json"
 
-      response = Net::HTTP.start(uri.hostname, uri.port) { |http|
-        http.request Toot.config.request_filter.(request)
-      }
+      response = Toot.config.http_connection.post uri do |request|
+        request.body = {
+          callback_url: Toot.config.callback_url,
+          channel: subscription.channel,
+        }.to_json
+        request.headers["Content-Type"] = "application/json"
+      end
 
-      case response
-      when Net::HTTPSuccess
-      else
-        raise RegisterSubscriptionFailure, "Response code: #{response.code}"
+      unless response.success?
+        raise RegisterSubscriptionFailure, "Response code: #{response.status}"
       end
     end
 

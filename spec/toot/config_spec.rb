@@ -97,17 +97,6 @@ RSpec.describe Toot::Config do
     end
   end
 
-  describe "#request_filter" do
-    it "allows basic getting and setting" do
-      config.request_filter = :foo
-      expect(config.request_filter).to eq(:foo)
-    end
-
-    it "defaults to a proc that returns what is passed" do
-      expect(config.request_filter.(:value)).to eq(:value)
-    end
-  end
-
   describe "#find_source_by_name" do
     it "returns the source with the given name" do
       src1 = config.source :src1, subscription_url: "", channel_prefix: ""

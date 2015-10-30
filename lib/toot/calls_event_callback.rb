@@ -6,23 +6,21 @@ module Toot
 
     def perform(callback_url, event_data)
       uri = URI(callback_url)
-      request = Net::HTTP::Post.new(uri)
-      request.body = event_data.to_json
-      request.content_type = "application/json"
 
-      response = Net::HTTP.start(uri.hostname, uri.port) do |http|
-        http.request Toot.config.request_filter.(request)
+      response = Toot.config.http_connection.post do |request|
+        request.url uri
+        request.body = event_data.to_json
+        request.headers["Content-Type"] = "application/json"
       end
 
-      case response
-      when Net::HTTPSuccess
-        if response["X-Toot-Unsubscribe"]
+      if response.success?
+        if response.headers["X-Toot-Unsubscribe"]
           Toot.redis do |r|
             r.srem event_data["channel"], callback_url
           end
         end
       else
-        raise CallbackFailure, "Response code: #{response.code}"
+        raise CallbackFailure, "Response code: #{response.status}"
       end
     end
   end
