@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Travis Petticrew"]
   spec.email         = ["travis@petticrew.net"]
 
-  spec.summary       = %q{WIP: A tool for sounding off events to remote services}
-  spec.description   = %q{WIP: A tool for sounding off events to remote services}
+  spec.summary       = %q{Send and receive events from remote services over HTTP.}
+  spec.description   = %q{Send and receive events from remote services over HTTP.}
   spec.homepage      = "https://github.com/watermarkchurch/toot"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
