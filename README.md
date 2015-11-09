@@ -162,9 +162,12 @@ routing config][2], or more generically, you can just decorate the
 service with another callable object that does the authentication
 checks.
 
-**TODO:** Currently we don't have the ability to add credentials to
-outgoing requests. This will need to be added before this problem is
-100% solved.
+To add authentication to outgoing requests you can build a Faraday
+middleware and install it to the default connection using the
+`http_connection` configuration option.
+
+Check out the [toot-auth][3] for an example implementation using HTTP
+Basic auth and credentials stored in Redis.
 
 ## Installation
 
@@ -205,3 +208,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/waterm
 
 [1]: https://en.wikipedia.org/wiki/Reverse_domain_name_notation
 [2]: http://guides.rubyonrails.org/routing.html#advanced-constraints
+[3]: https://github.com/watermarkchurch/toot-auth
