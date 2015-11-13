@@ -100,7 +100,7 @@ RSpec.describe Toot::Config do
   describe "#find_source_by_name" do
     it "returns the source with the given name" do
       src1 = config.source :src1, subscription_url: "", channel_prefix: ""
-      src2 = config.source :src2, subscription_url: "", channel_prefix: ""
+      _src2 = config.source :src2, subscription_url: "", channel_prefix: ""
       expect(config.find_source_by_name(:src1)).to eq(src1)
       expect(config.find_source_by_name(:src3)).to eq(nil)
     end
@@ -114,7 +114,7 @@ RSpec.describe Toot::Config do
     it "returns all subscriptions for specified channel" do
       s1 = config.subscribe :test, 'ch1', :handler
       s2 = config.subscribe :test, 'ch1', :handler
-      s3 = config.subscribe :test, 'ch2', :handler
+      _s3 = config.subscribe :test, 'ch2', :handler
       expect(config.subscriptions_for_channel('ch1')).to eq([s1, s2])
     end
 
