@@ -4,6 +4,7 @@ require 'sidekiq/testing'
 require 'webmock/rspec'
 
 Sidekiq::Testing.inline!
+Sidekiq::Logging.logger = nil
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

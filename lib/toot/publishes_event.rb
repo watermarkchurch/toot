@@ -4,6 +4,10 @@ module Toot
 
     def perform(event_data)
       event = Event.new(event_data)
+
+      logger.info { "Event ID: #{event.id}" }
+      logger.debug { "Payload: #{event.inspect}" }
+
       channel_callback_urls(event.channel)
         .map { |callback| CallsEventCallback.perform_async(callback, event_data) }
     end
