@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.3
@@ -108,11 +110,6 @@ Layout/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
   StyleGuide: '#indent-conditional-assignment'
   Enabled: true
-
-Rails/SaveBang:
-  Description: 'Identifies possible cases where Active Record save! or related should be used.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#save-bang'
-  Enabled: false
 
 Style/AutoResourceCleanup:
   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'

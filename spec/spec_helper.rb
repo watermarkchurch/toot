@@ -1,4 +1,6 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'toot'
 require 'sidekiq/testing'
 require 'webmock/rspec'
@@ -14,7 +16,7 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:each) do |example|
+  config.before(:each) do |_example|
     Toot.reset_config
   end
 
@@ -25,9 +27,7 @@ RSpec.configure do |config|
 
   config.warnings = true
 
-  if config.files_to_run.one?
-    config.default_formatter = 'doc'
-  end
+  config.default_formatter = 'doc' if config.files_to_run.one?
 
   config.order = :random
   Kernel.srand config.seed
