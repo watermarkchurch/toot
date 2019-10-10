@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'active_support/core_ext/hash'
 
 module Toot
   class Event
