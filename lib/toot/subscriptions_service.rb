@@ -23,7 +23,7 @@ module Toot
     end
 
     def get
-      accept = request.get_header('HTTP_ACCEPT')
+      accept = request.env['HTTP_ACCEPT']
       
       if accept.include?('application/json')
         response.add_header('Content-Type', 'application/json')
