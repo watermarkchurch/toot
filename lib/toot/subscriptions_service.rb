@@ -26,7 +26,7 @@ module Toot
       accept = request.env['HTTP_ACCEPT']
       
       if accept.include?('application/json')
-        response.add_header('Content-Type', 'application/json')
+        response.header['Content-Type'] = 'application/json'
         response.write({
           channels: channels,
           subscriptions: subscriptions,
