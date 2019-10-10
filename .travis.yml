@@ -13,4 +13,3 @@ matrix:
     # Rails 6 & sidekiq 6 incompatible with ruby 2.3
   - rvm: 2.3.8
     gemfile: gemfiles/rails_6.x.gemfile
-before_install: gem install bundler -v 1.10.5
