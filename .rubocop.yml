@@ -17,6 +17,8 @@ AllCops:
     # 3rd party
     - 'vendor/**/*'
     - 'lib/**/*'
+    # Appraisal gem re-creates these occasionally
+    - gemfiles/*.gemfile
 
 Style/Documentation:
   Enabled: false
