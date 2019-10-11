@@ -7,8 +7,8 @@ require 'toot/version'
 Gem::Specification.new do |spec|
   spec.name          = 'toot'
   spec.version       = Toot::VERSION
-  spec.authors       = ['Travis Petticrew']
-  spec.email         = ['travis@petticrew.net']
+  spec.authors       = ['Watermark Dev']
+  spec.email         = ['dev@watermark.org']
 
   spec.summary       = 'Send and receive events from remote services over HTTP.'
   spec.description   = 'Send and receive events from remote services over HTTP.'
