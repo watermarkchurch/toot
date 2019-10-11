@@ -49,6 +49,21 @@ module Toot
       end
     end
 
+    def delete
+      channel = request.params['channel']
+      callback_url = request.params['callback_url']
+      if channel.blank? || callback_url.blank?
+        response.status = 400
+        return
+      end
+
+      result = Toot.redis do |r|
+        r.srem channel, callback_url
+      end
+
+      response.status = result ? 204 : 404
+    end
+
     private
     
     def parse_body_json(request)

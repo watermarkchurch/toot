@@ -80,4 +80,36 @@ RSpec.describe Toot::SubscriptionsService do
         .to eq(['https://test.com/webhook'])
     end
   end
+
+  describe 'delete' do
+    let(:env) {
+      {
+        'REQUEST_METHOD' => 'DELETE',
+        'QUERY_STRING' => "channel=test.channel&callback_url=#{CGI.escape('http://example.com/callback')}",
+        'rack.input' => StringIO.new('')
+      }
+    }
+
+    it 'unsubscribes a webhook' do
+      expect(connection).to receive(:srem)
+        .with('test.channel', 'http://example.com/callback')
+        .and_return(true)
+
+      # act
+      response = Rack::MockResponse.new(*described_class.call(env))
+
+      expect(response.status).to eq(204)
+    end
+
+    it 'returns 404 when webhook does not exist in channel' do
+      expect(connection).to receive(:srem)
+        .with('test.channel', 'http://example.com/callback')
+        .and_return(false)
+
+      # act
+      response = Rack::MockResponse.new(*described_class.call(env))
+
+      expect(response.status).to eq(404)
+    end
+  end
 end
