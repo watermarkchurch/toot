@@ -1,5 +1,4 @@
 require 'securerandom'
-require 'active_support/core_ext/hash'
 
 module Toot
   class Event
@@ -15,7 +14,7 @@ module Toot
     }
 
     def initialize(args={})
-      args = DEFAULTS.().merge(args.symbolize_keys)
+      args = DEFAULTS.().merge(_symbolize_keys(args))
       @id = args[:id]
       @timestamp = args[:timestamp]
       @payload = args[:payload]
@@ -42,6 +41,15 @@ module Toot
 
     def [](key)
       payload[key]
+    end
+
+    private
+
+    def _symbolize_keys(h)
+      h.inject({}) do |options, (key, value)|
+        options[(key.to_sym rescue key) || key] = value
+        options
+      end
     end
   end
 end
