@@ -56,8 +56,27 @@ RSpec.describe Toot::RegistersSubscriptions do
     stub_request(:post, 'http://src1.com/cb').and_return(status: 400)
     Toot.config.subscribe :src1, 'ch1', spy(:handler1)
 
-    expect { described_class.call }.to raise_error(Toot::RegisterSubscriptionFailure)
-      .with_message(/400/)
+    expect { described_class.call }.to raise_error(
+      an_instance_of(Toot::RegisterSubscriptionFailure).and(having_attributes(status: 400))
+    )
+  end
+
+  it 'raises RegisterSubscriptionFailure when server is unavailable' do
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 503)
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
+
+    expect { described_class.call }.to raise_error(
+      an_instance_of(Toot::RegisterSubscriptionFailure).and(having_attributes(status: 503))
+    )
+  end
+
+  it 'does not wrap connection failures' do
+    stub_request(:post, 'http://src1.com/cb').to_timeout
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
+
+    expect {
+      described_class.call
+    }.to raise_error(Faraday::ConnectionFailed)
   end
 
   it 'uses the configured http_connection in Toot.config' do
