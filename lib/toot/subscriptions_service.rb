@@ -40,13 +40,15 @@ module Toot
     def post
       json = parse_body_json(request)
 
-      if json["channel"] && json["callback_url"]
-        Toot.redis do |r|
-          r.sadd json["channel"], json["callback_url"]
-        end
-      else
+      unless json["channel"] && json["callback_url"]
         response.status = 422
+        return
       end
+
+      added = Toot.redis do |r|
+        r.sadd json["channel"], json["callback_url"]
+      end
+      response.status = added ? 201 : 204
     end
 
     def delete

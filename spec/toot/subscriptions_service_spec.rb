@@ -22,11 +22,27 @@ RSpec.describe Toot::SubscriptionsService do
     }
 
     it "adds the given callback_url to the channel's set in Redis" do
+      expect(connection).to receive(:sadd)
+        .with('test.channel', 'http://example.com/callback')
+        .and_return(true)
+
       # act
       response = Rack::MockResponse.new(*described_class.call(env))
 
-      expect(connection).to have_received(:sadd).with('test.channel', 'http://example.com/callback')
-      expect(response.status).to eq(200)
+      puts response.body
+      expect(response.status).to eq(201)
+    end
+
+    it 'returns 204 if the callback_url already exists in redis' do
+      expect(connection).to receive(:sadd)
+        .with('test.channel', 'http://example.com/callback')
+        .and_return(false)
+
+      # act
+      response = Rack::MockResponse.new(*described_class.call(env))
+
+      puts response.body
+      expect(response.status).to eq(204)
     end
 
     it "does nothing and return 422 if channel isn't set" do

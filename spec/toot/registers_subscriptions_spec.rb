@@ -12,8 +12,8 @@ RSpec.describe Toot::RegistersSubscriptions do
   end
 
   it "does a POST to each subscribed channel to the source's subscribe_url" do
-    stub_request(:post, 'http://src1.com/cb').and_return(status: 200)
-    stub_request(:post, 'http://src2.com/cb').and_return(status: 200)
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 201)
+    stub_request(:post, 'http://src2.com/cb').and_return(status: 201)
     Toot.config.subscribe :src1, 'ch1', spy(:handler1)
     Toot.config.subscribe :src2, 'ch2', spy(:handler2)
 
@@ -34,9 +34,18 @@ RSpec.describe Toot::RegistersSubscriptions do
   end
 
   it "doesn't make multiple requests for duplicated channel subscriptions" do
-    stub_request(:post, 'http://src1.com/cb').and_return(status: 200)
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 201)
     Toot.config.subscribe :src1, 'ch1', spy(:handler1)
     Toot.config.subscribe :src1, 'ch1', spy(:handler2)
+
+    described_class.call
+
+    expect(WebMock).to have_requested(:post, 'http://src1.com/cb').once
+  end
+
+  it 'finishes with success when channel subscription already exists' do
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 204)
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
 
     described_class.call
 
