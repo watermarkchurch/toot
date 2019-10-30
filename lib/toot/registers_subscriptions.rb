@@ -28,7 +28,7 @@ module Toot
       end
 
       unless response.success?
-        raise RegisterSubscriptionFailure, "Response code: #{response.status}"
+        raise RegisterSubscriptionFailure, response.status
       end
     end
 

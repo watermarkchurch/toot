@@ -12,8 +12,8 @@ RSpec.describe Toot::RegistersSubscriptions do
   end
 
   it "does a POST to each subscribed channel to the source's subscribe_url" do
-    stub_request(:post, 'http://src1.com/cb').and_return(status: 200)
-    stub_request(:post, 'http://src2.com/cb').and_return(status: 200)
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 201)
+    stub_request(:post, 'http://src2.com/cb').and_return(status: 201)
     Toot.config.subscribe :src1, 'ch1', spy(:handler1)
     Toot.config.subscribe :src2, 'ch2', spy(:handler2)
 
@@ -34,9 +34,18 @@ RSpec.describe Toot::RegistersSubscriptions do
   end
 
   it "doesn't make multiple requests for duplicated channel subscriptions" do
-    stub_request(:post, 'http://src1.com/cb').and_return(status: 200)
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 201)
     Toot.config.subscribe :src1, 'ch1', spy(:handler1)
     Toot.config.subscribe :src1, 'ch1', spy(:handler2)
+
+    described_class.call
+
+    expect(WebMock).to have_requested(:post, 'http://src1.com/cb').once
+  end
+
+  it 'finishes with success when channel subscription already exists' do
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 204)
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
 
     described_class.call
 
@@ -47,8 +56,27 @@ RSpec.describe Toot::RegistersSubscriptions do
     stub_request(:post, 'http://src1.com/cb').and_return(status: 400)
     Toot.config.subscribe :src1, 'ch1', spy(:handler1)
 
-    expect { described_class.call }.to raise_error(Toot::RegisterSubscriptionFailure)
-      .with_message(/400/)
+    expect { described_class.call }.to raise_error(
+      an_instance_of(Toot::RegisterSubscriptionFailure).and(having_attributes(status: 400))
+    )
+  end
+
+  it 'raises RegisterSubscriptionFailure when server is unavailable' do
+    stub_request(:post, 'http://src1.com/cb').and_return(status: 503)
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
+
+    expect { described_class.call }.to raise_error(
+      an_instance_of(Toot::RegisterSubscriptionFailure).and(having_attributes(status: 503))
+    )
+  end
+
+  it 'does not wrap connection failures' do
+    stub_request(:post, 'http://src1.com/cb').to_timeout
+    Toot.config.subscribe :src1, 'ch1', spy(:handler1)
+
+    expect {
+      described_class.call
+    }.to raise_error(Faraday::ConnectionFailed)
   end
 
   it 'uses the configured http_connection in Toot.config' do

@@ -3,6 +3,7 @@ require 'toot/version'
 require 'faraday'
 require 'sidekiq'
 
+require 'toot/errors'
 require 'toot/config'
 require 'toot/event'
 require 'toot/source'
@@ -16,11 +17,6 @@ require 'toot/registers_subscriptions'
 require 'toot/subscriptions_service'
 
 module Toot
-
-  class Error < StandardError; end
-  class ConfigError < Error; end
-  class CallbackFailure < Error; end
-  class RegisterSubscriptionFailure < Error; end
 
   def self.config
     if block_given?
