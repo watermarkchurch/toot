@@ -40,7 +40,7 @@ module Toot
     def post
       json = parse_body_json(request)
 
-      unless json["channel"] && json["callback_url"]
+      if !json["channel"] || !json["callback_url"]
         response.status = 422
         return
       end
